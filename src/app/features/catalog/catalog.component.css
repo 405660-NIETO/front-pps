@@ -1,0 +1,33 @@
+/* src/app/features/catalog/catalog.component.css */
+
+.categoria-item:hover {
+  background-color: #f8f9fa;
+}
+
+.categoria-item:last-child {
+  border-bottom: none !important;
+}
+
+/* Estilo para badges de categorías seleccionadas */
+.badge i {
+  font-size: 0.8em;
+}
+
+.badge i:hover {
+  color: #ffcccc;
+}
+
+/* Animación suave para el colapso de filtros */
+.collapse {
+  transition: all 0.3s ease;
+}
+
+/* Paginación personalizada */
+.page-link {
+  color: var(--primary-color);
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}

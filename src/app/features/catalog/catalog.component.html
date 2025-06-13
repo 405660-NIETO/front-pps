@@ -1,1 +1,222 @@
-<p>catalog works!</p>
+<!-- src/app/features/catalog/catalog.component.html -->
+<div class="container py-4">
+  <!-- Header del catálogo -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2><i class="bi bi-grid"></i> Catálogo de Productos</h2>
+      <p class="text-muted">Encontrá los mejores instrumentos, accesorios y más</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <button class="btn btn-link text-decoration-none" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#filtrosCollapse"
+                    [attr.aria-expanded]="mostrarFiltros">
+              <i class="bi bi-funnel"></i> Filtros de búsqueda
+              <i class="bi" [class]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+            </button>
+          </h5>
+        </div>
+        
+        <div class="collapse" [class.show]="mostrarFiltros" id="filtrosCollapse">
+          <div class="card-body">
+            <form [formGroup]="filtrosForm" (ngSubmit)="aplicarFiltros()">
+              <div class="row">
+                <!-- Búsqueda por nombre -->
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Buscar producto</label>
+                  <input type="text" 
+                         class="form-control" 
+                         formControlName="nombre"
+                         placeholder="Nombre del producto...">
+                </div>
+
+                <!-- Filtro por marca -->
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Marca</label>
+                  <input type="text" 
+                         class="form-control" 
+                         formControlName="nombreMarca"
+                         placeholder="Buscar marca...">
+                </div>
+
+                <!-- Rango de precios -->
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Rango de precio</label>
+                  <div class="row">
+                    <div class="col-6">
+                      <input type="number" 
+                             class="form-control form-control-sm" 
+                             formControlName="precioMin"
+                             placeholder="Mín">
+                    </div>
+                    <div class="col-6">
+                      <input type="number" 
+                             class="form-control form-control-sm" 
+                             formControlName="precioMax"
+                             placeholder="Máx">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Categorías (lo más copado) -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Categorías</label>
+                  <div class="position-relative">
+                    <input type="text" 
+                           class="form-control" 
+                           formControlName="buscarCategoria"
+                           placeholder="Buscar categorías..."
+                           (input)="buscarCategorias($event)"
+                           (focus)="mostrarDropdownCategorias = true">
+                    
+                    <!-- Dropdown de categorías -->
+                    <div *ngIf="mostrarDropdownCategorias && categoriasFiltradas.length > 0" 
+                         class="position-absolute w-100 bg-white border rounded shadow-sm mt-1" 
+                         style="z-index: 1000; max-height: 200px; overflow-y: auto;">
+                      <div *ngFor="let categoria of categoriasFiltradas" 
+                           class="p-2 border-bottom categoria-item"
+                           (click)="seleccionarCategoria(categoria)"
+                           style="cursor: pointer;">
+                        {{categoria.nombre}}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Categorías seleccionadas -->
+                  <div class="mt-2" *ngIf="categoriasSeleccionadas.length > 0">
+                    <span *ngFor="let categoria of categoriasSeleccionadas" 
+                          class="badge bg-primary me-1 mb-1">
+                      {{categoria}}
+                      <i class="bi bi-x ms-1" 
+                         (click)="quitarCategoria(categoria)"
+                         style="cursor: pointer;"></i>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Stock -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Stock disponible</label>
+                  <div class="row">
+                    <div class="col-6">
+                      <input type="number" 
+                             class="form-control form-control-sm" 
+                             formControlName="stockMin"
+                             placeholder="Stock mín">
+                    </div>
+                    <div class="col-6">
+                      <select class="form-select form-select-sm" formControlName="soloConStock">
+                        <option value="">Todos</option>
+                        <option value="true">Solo con stock</option>
+                        <option value="false">Solo sin stock</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botones de filtros -->
+              <div class="row">
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary me-2" [disabled]="cargandoProductos">
+                    <i class="bi bi-search"></i> Buscar
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="limpiarFiltros()">
+                    <i class="bi bi-x-circle"></i> Limpiar
+                  </button>
+                  <span class="ms-3 text-muted" *ngIf="totalProductos > 0">
+                    {{totalProductos}} productos encontrados
+                  </span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="cargandoProductos" class="row">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Buscando...</span>
+      </div>
+      <p class="mt-2">Buscando productos...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="row">
+    <div class="col-12">
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i>
+        Error: {{error}}
+      </div>
+    </div>
+  </div>
+
+  <!-- Productos Grid -->
+  <div *ngIf="!cargandoProductos && !error" class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let producto of productos">
+      <app-product-card [producto]="producto"></app-product-card>
+    </div>
+  </div>
+
+  <!-- Sin resultados -->
+  <div *ngIf="!cargandoProductos && !error && productos.length === 0" class="row">
+    <div class="col-12 text-center py-5">
+      <i class="bi bi-search display-1 text-muted"></i>
+      <h3 class="mt-3">No se encontraron productos</h3>
+      <p class="text-muted">Probá ajustando los filtros de búsqueda</p>
+      <button class="btn btn-primary" (click)="limpiarFiltros()">
+        <i class="bi bi-arrow-clockwise"></i> Mostrar todos
+      </button>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <div *ngIf="totalPaginas > 1" class="row mt-4">
+    <div class="col-12">
+      <nav aria-label="Paginación de productos">
+        <ul class="pagination justify-content-center">
+          <!-- Anterior -->
+          <li class="page-item" [class.disabled]="paginaActual === 0">
+            <button class="page-link" (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 0">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </li>
+
+          <!-- Páginas -->
+          <li *ngFor="let pagina of obtenerPaginasVisibles()" 
+              class="page-item" 
+              [class.active]="pagina === paginaActual">
+            <button class="page-link" (click)="irAPagina(pagina)">
+              {{pagina + 1}}
+            </button>
+          </li>
+
+          <!-- Siguiente -->
+          <li class="page-item" [class.disabled]="paginaActual >= totalPaginas - 1">
+            <button class="page-link" (click)="irAPagina(paginaActual + 1)" [disabled]="paginaActual >= totalPaginas - 1">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Info de paginación -->
+      <div class="text-center text-muted">
+        Página {{paginaActual + 1}} de {{totalPaginas}} 
+        ({{productos.length}} de {{totalProductos}} productos)
+      </div>
+    </div>
+  </div>
+</div>
