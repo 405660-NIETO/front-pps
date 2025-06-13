@@ -1,1 +1,59 @@
-<p>landing works!</p>
+<div class="container-fluid">
+  <!-- Hero Section -->
+  <div class="row bg-primary text-white py-5 mb-4">
+    <div class="col-12 text-center">
+      <h1 class="display-4">🎵 Bienvenido a nuestra Tienda Musical</h1>
+      <p class="lead">Encuentra los mejores instrumentos, accesorios y servicios de reparación</p>
+      <a routerLink="/catalog" class="btn btn-light btn-lg mt-3">
+        <i class="bi bi-grid"></i> Explorar Catálogo
+      </a>
+    </div>
+  </div>
+
+  <!-- Productos Destacados -->
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2 class="text-center mb-4">🌟 Productos Destacados</h2>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="row">
+      <div class="col-12 text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando productos...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="row">
+      <div class="col-12">
+        <div class="alert alert-danger text-center">
+          <i class="bi bi-exclamation-triangle"></i>
+          Error al cargar productos: {{error}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos Grid -->
+    <div *ngIf="!loading && !error" class="row">
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let producto of productosDestacados">
+        <app-product-card [producto]="producto"></app-product-card>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row mt-5" *ngIf="!loading">
+      <div class="col-12 text-center">
+        <h3>¿Necesitás reparar tu instrumento?</h3>
+        <p class="text-muted">Ofrecemos servicios profesionales de lutería</p>
+        <button class="btn btn-outline-primary btn-lg">
+          <i class="bi bi-tools"></i> Solicitar Reparación
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
