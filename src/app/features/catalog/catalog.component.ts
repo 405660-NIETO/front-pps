@@ -1,3 +1,4 @@
+// src/app/features/catalog/catalog.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
@@ -40,7 +41,6 @@ export class CatalogComponent implements OnInit {
       nombreMarca: [''],
       precioMin: [''],
       precioMax: [''],
-      stockMin: [''],
       soloConStock: [''],
       buscarCategoria: ['']
     });
@@ -50,13 +50,15 @@ export class CatalogComponent implements OnInit {
     this.cargarCategorias();
     this.cargarProductos();
     
-    // Cerrar dropdown al hacer click fuera
-    document.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.position-relative')) {
-        this.mostrarDropdownCategorias = false;
-      }
-    });
+    // Cerrar dropdown al hacer click fuera (solo en browser)
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.position-relative')) {
+          this.mostrarDropdownCategorias = false;
+        }
+      });
+    }
   }
 
   cargarCategorias() {
@@ -98,7 +100,8 @@ export class CatalogComponent implements OnInit {
     const formValue = this.filtrosForm.value;
     const filtros: any = {
       page: this.paginaActual,
-      size: this.tamanioPagina
+      size: this.tamanioPagina,
+      activo: true // ← Solo productos activos
     };
 
     // Agregar filtros solo si tienen valor
@@ -107,7 +110,7 @@ export class CatalogComponent implements OnInit {
     }
     
     if (formValue.nombreMarca?.trim()) {
-      filtros.nombreMarca = formValue.nombreMarca.trim();
+      filtros.nombreMarca = formValue.nombreMarca.trim(); // ← Corregido
     }
     
     if (formValue.precioMin) {
@@ -118,21 +121,25 @@ export class CatalogComponent implements OnInit {
       filtros.precioMax = formValue.precioMax;
     }
     
-    if (formValue.stockMin) {
-      filtros.stockMin = formValue.stockMin;
-    }
-
-    // Solo productos con stock
+    // Stock dropdown
     if (formValue.soloConStock === 'true') {
-      filtros.stockMin = 1;
+      filtros.stockMin = 1; // Solo productos CON stock (>= 1)
+      console.log('🟢 Solo CON stock - enviando stockMin=1');
     } else if (formValue.soloConStock === 'false') {
-      filtros.stockMax = 0;
+      filtros.stockMin = 0; // Exactamente 0
+      filtros.stockMax = 0; // Exactamente 0
+      console.log('🔴 Solo SIN stock - enviando stockMin=0, stockMax=0');
+    } else {
+      console.log('⚪ TODOS los productos - sin filtro de stock');
     }
+    // Si es '' (Todos), no agregamos filtro de stock
 
     // Categorías seleccionadas
     if (this.categoriasSeleccionadas.length > 0) {
       filtros.categorias = this.categoriasSeleccionadas;
     }
+
+    console.log('Filtros enviados al backend:', filtros); // ← Debug
 
     return filtros;
   }
