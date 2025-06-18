@@ -98,6 +98,9 @@ export class CatalogComponent implements OnInit {
 
   construirFiltros(): any {
     const formValue = this.filtrosForm.value;
+    console.log('📋 FormValue completo:', formValue);
+    console.log('📋 soloConStock value:', formValue.soloConStock);
+    console.log('📋 soloConStock type:', typeof formValue.soloConStock);
     const filtros: any = {
       page: this.paginaActual,
       size: this.tamanioPagina,
@@ -121,25 +124,17 @@ export class CatalogComponent implements OnInit {
       filtros.precioMax = formValue.precioMax;
     }
     
-    // Stock dropdown
     if (formValue.soloConStock === 'true') {
       filtros.stockMin = 1; // Solo productos CON stock (>= 1)
       console.log('🟢 Solo CON stock - enviando stockMin=1');
-    } else if (formValue.soloConStock === 'false') {
-      filtros.stockMin = 0; // Exactamente 0
-      filtros.stockMax = 0; // Exactamente 0
-      console.log('🔴 Solo SIN stock - enviando stockMin=0, stockMax=0');
-    } else {
-      console.log('⚪ TODOS los productos - sin filtro de stock');
     }
-    // Si es '' (Todos), no agregamos filtro de stock
 
     // Categorías seleccionadas
     if (this.categoriasSeleccionadas.length > 0) {
       filtros.categorias = this.categoriasSeleccionadas;
     }
 
-    console.log('Filtros enviados al backend:', filtros); // ← Debug
+    console.log('🚀 Filtros que se envían al backend:', filtros);
 
     return filtros;
   }
