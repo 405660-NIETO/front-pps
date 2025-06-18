@@ -1,0 +1,249 @@
+<!-- src/app/features/repair-request/repair-request.component.html -->
+<div class="container py-4">
+  
+  <!-- Solicitud exitosa -->
+  <div *ngIf="solicitudEnviada" class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-success">
+        <div class="card-header bg-success text-white text-center">
+          <h3><i class="bi bi-check-circle-fill"></i> ¡Solicitud Enviada!</h3>
+        </div>
+        <div class="card-body text-center">
+          <h4>Tu código de referencia:</h4>
+          <div class="alert alert-primary">
+            <h2 class="mb-0">REP-{{reparacionId}}</h2>
+          </div>
+          
+          <p class="lead">¡Perfecto! Tu solicitud fue registrada exitosamente.</p>
+          
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <h5><i class="bi bi-1-circle"></i> Próximos pasos:</h5>
+              <ul class="text-start">
+                <li>Guardá tu código de referencia</li>
+                <li>Vení al local con tu instrumento</li>
+                <li>Mencioná el código <strong>REP-{{reparacionId}}</strong></li>
+                <li>Hacemos diagnóstico gratuito</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h5><i class="bi bi-clock"></i> Horarios:</h5>
+              <p class="text-start">
+                <strong>Lunes a Sábado:</strong><br>
+                9:00 - 18:00 hs<br><br>
+                <strong>Domingos:</strong><br>
+                Cerrado
+              </p>
+            </div>
+          </div>
+          
+          <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i>
+            <strong>Recordá:</strong> El diagnóstico es gratuito y sin compromiso. 
+            Decidí si continuar después de conocer el presupuesto.
+          </div>
+          
+          <div class="d-flex gap-2 justify-content-center mt-4">
+            <button class="btn btn-primary" (click)="nuevaSolicitud()">
+              <i class="bi bi-plus"></i> Nueva Solicitud
+            </button>
+            <a routerLink="/" class="btn btn-outline-secondary">
+              <i class="bi bi-house"></i> Volver al Inicio
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario principal -->
+  <div *ngIf="!solicitudEnviada" class="row">
+    
+    <!-- Columna izquierda: Información -->
+    <div class="col-lg-6 mb-4">
+      <!-- Hero con imagen -->
+      <div class="position-relative mb-4">
+        <img src="https://images.unsplash.com/photo-1655569614970-67d5579f1c60?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+             alt="Reparación de instrumentos" 
+             class="img-fluid rounded shadow"
+             style="height: 300px; width: 100%; object-fit: cover;">
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-25 rounded d-flex align-items-center justify-content-center">
+          <h2 class="text-white text-center">🛠️ Servicios de Reparación</h2>
+        </div>
+      </div>
+
+      <p class="lead">Especialistas en lutería con años de experiencia cuidando tu instrumento.</p>
+      
+      <h4><i class="bi bi-tools"></i> Nuestros Servicios:</h4>
+      <div class="row">
+        <div class="col-6">
+          <ul class="list-unstyled">
+            <li><i class="bi bi-check-circle text-success"></i> Cambio de cuerdas</li>
+            <li><i class="bi bi-check-circle text-success"></i> Calibración profesional</li>
+            <li><i class="bi bi-check-circle text-success"></i> Reparación de trastes</li>
+          </ul>
+        </div>
+        <div class="col-6">
+          <ul class="list-unstyled">
+            <li><i class="bi bi-check-circle text-success"></i> Cambio de pastillas</li>
+            <li><i class="bi bi-check-circle text-success"></i> Restauración completa</li>
+            <li><i class="bi bi-check-circle text-success"></i> Diagnóstico gratuito</li>
+          </ul>
+        </div>
+      </div>
+      
+      <h4><i class="bi bi-list-ol"></i> ¿Cómo funciona?</h4>
+      <div class="timeline">
+        <div class="d-flex mb-3">
+          <span class="badge bg-primary rounded-circle me-3" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">1</span>
+          <div>
+            <strong>Completá el formulario</strong><br>
+            <small class="text-muted">Contanos sobre tu instrumento y qué necesita</small>
+          </div>
+        </div>
+        <div class="d-flex mb-3">
+          <span class="badge bg-primary rounded-circle me-3" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">2</span>
+          <div>
+            <strong>Recibí tu código</strong><br>
+            <small class="text-muted">Te damos un número de referencia único</small>
+          </div>
+        </div>
+        <div class="d-flex mb-3">
+          <span class="badge bg-primary rounded-circle me-3" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">3</span>
+          <div>
+            <strong>Vení al local</strong><br>
+            <small class="text-muted">Cuando te convenga, con tu instrumento</small>
+          </div>
+        </div>
+        <div class="d-flex mb-3">
+          <span class="badge bg-primary rounded-circle me-3" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">4</span>
+          <div>
+            <strong>Mencioná tu código</strong><br>
+            <small class="text-muted">Proceso más rápido y organizado</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>Sin compromiso:</strong> El diagnóstico es gratuito y podés decidir si continuar después de conocer el presupuesto.
+      </div>
+    </div>
+
+    <!-- Columna derecha: Formulario -->
+    <div class="col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-clipboard"></i> Pre-Registro de Reparación</h5>
+        </div>
+        <div class="card-body">
+          
+          <!-- Error general -->
+          <div *ngIf="error" class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle"></i> {{error}}
+          </div>
+
+          <form [formGroup]="repairForm" (ngSubmit)="enviarSolicitud()">
+            
+            <!-- FORMULARIO SIMPLIFICADO - Solo 3 campos -->
+            
+            <!-- Campo 1: Datos de Contacto -->
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-person-circle"></i> 
+                Tus datos de contacto *
+              </label>
+              <textarea class="form-control" 
+                        formControlName="datosContacto"
+                        [class.is-invalid]="isFieldInvalid('datosContacto')"
+                        rows="3"
+                        maxlength="80"
+                        placeholder="Incluí tu nombre, email y/o teléfono para que podamos contactarte...
+
+Ejemplo:
+Juan Pérez - juanperez@email.com - 11-1234-5678"></textarea>
+              <div class="invalid-feedback">{{getFieldError('datosContacto')}}</div>
+              <div class="d-flex justify-content-between">
+                <small class="text-muted">
+                  <i class="bi bi-info-circle"></i>
+                  Incluí al menos tu email o teléfono
+                </small>
+                <small class="text-muted">
+                  {{repairForm.get('datosContacto')?.value?.length || 0}}/80 caracteres
+                </small>
+              </div>
+            </div>
+
+            <!-- Campo 2: Problema del Instrumento -->
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-music-note-beamed"></i>
+                ¿Qué problema tiene tu instrumento? *
+              </label>
+              <textarea class="form-control" 
+                        formControlName="problemasReportados"
+                        [class.is-invalid]="isFieldInvalid('problemasReportados')"
+                        rows="4"
+                        maxlength="120"
+                        placeholder="Contanos sobre tu instrumento y qué le sucede...
+
+Ejemplo:
+Guitarra acústica Yamaha FG800 - ruido extraño en cuerdas graves, se desafina rápido"></textarea>
+              <div class="invalid-feedback">{{getFieldError('problemasReportados')}}</div>
+              <div class="d-flex justify-content-between">
+                <small class="text-muted">
+                  <i class="bi bi-lightbulb"></i>
+                  Incluí: tipo, marca y problema
+                </small>
+                <small class="text-muted">
+                  {{repairForm.get('problemasReportados')?.value?.length || 0}}/120 caracteres
+                </small>
+              </div>
+            </div>
+
+            <!-- Campo 3: Fecha de Inicio -->
+            <div class="mb-4">
+              <label class="form-label">
+                <i class="bi bi-calendar-check"></i>
+                ¿Cuándo pensás traer tu instrumento? *
+              </label>
+              <input type="date" 
+                     class="form-control" 
+                     formControlName="fechaInicio"
+                     [class.is-invalid]="isFieldInvalid('fechaInicio')"
+                     [min]="fechaMinima">
+              <div class="invalid-feedback">{{getFieldError('fechaInicio')}}</div>
+              <small class="text-muted">
+                <i class="bi bi-clock"></i>
+                Nos ayuda a organizarnos mejor para cuando llegues
+              </small>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" 
+                      class="btn btn-success btn-lg"
+                      [disabled]="repairForm.invalid || enviandoSolicitud">
+                <span *ngIf="enviandoSolicitud" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!enviandoSolicitud" class="bi bi-send"></i>
+                {{enviandoSolicitud ? 'Enviando solicitud...' : 'Enviar Solicitud'}}
+              </button>
+              <a routerLink="/" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Inicio
+              </a>
+            </div>
+
+            <div class="text-center mt-3">
+              <small class="text-muted">
+                <i class="bi bi-shield-check"></i> 
+                Tus datos están seguros y solo se usan para contactarte sobre la reparación
+              </small>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- End row -->
+</div> <!-- End container -->

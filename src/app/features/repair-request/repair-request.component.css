@@ -1,0 +1,103 @@
+/* Timeline styling */
+.timeline {
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 30px;
+  bottom: 0;
+  width: 2px;
+  background: #dee2e6;
+}
+
+/* Badge circular para timeline */
+.timeline .badge {
+  z-index: 1;
+  position: relative;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Form enhancements */
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Card shadow suave */
+.card {
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Success state styling */
+.border-success {
+  border-color: #28a745 !important;
+  border-width: 2px !important;
+}
+
+/* Responsive image */
+.img-fluid {
+  transition: transform 0.3s ease;
+}
+
+.img-fluid:hover {
+  transform: scale(1.02);
+}
+
+/* Form validation styling */
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  display: block;
+  font-size: 0.875em;
+}
+
+/* Loading state */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Custom alert styling */
+.alert {
+  border-radius: 0.5rem;
+}
+
+.alert-info {
+  background-color: #e7f3ff;
+  border-color: #b8daff;
+  color: #0c5460;
+}
+
+/* Button enhancements */
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .timeline::before {
+    display: none;
+  }
+  
+  .col-lg-6 {
+    margin-bottom: 2rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+}
