@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
+import { tap, catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 export interface LoginRequest {
@@ -28,8 +28,7 @@ export class AuthService {
     this.checkSession();
   }
 
-login(credentials: LoginRequest): Observable<any> {
-    // 🔧 USAR URLSearchParams en lugar de FormData
+  login(credentials: LoginRequest): Observable<any> {
     const body = new URLSearchParams();
     body.set('username', credentials.username);
     body.set('password', credentials.password);
@@ -37,7 +36,7 @@ login(credentials: LoginRequest): Observable<any> {
     return this.http.post(`${environment.apiUrl}/login`, body.toString(), {
       withCredentials: true,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'  // ← CLAVE!
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       responseType: 'json'
     }).pipe(
@@ -61,7 +60,6 @@ login(credentials: LoginRequest): Observable<any> {
         console.log('✅ Logout exitoso');
       }),
       catchError((error) => {
-        // Incluso si falla el logout en servidor, limpiar cliente
         this.currentUserSubject.next(null);
         console.log('⚠️ Logout local forzado');
         return throwError(() => error);
@@ -69,16 +67,14 @@ login(credentials: LoginRequest): Observable<any> {
     );
   }
 
-  // Verificar sesión activa (para cuando recargan la página)
+  // ✅ VERSIÓN FINAL: checkSession() usando /auth/me
   private checkSession() {
-    // Hacer un request a un endpoint protegido para verificar sesión
-    this.http.get(`${environment.apiUrl}/usuarios/page`, {
-      withCredentials: true,
-      params: { page: '0', size: '1' }  // Mínimo request
+    this.http.get<Usuario>(`${environment.apiUrl}/auth/me`, {
+      withCredentials: true
     }).subscribe({
-      next: (response) => {
-        console.log('✅ Sesión activa detectada');
-        this.fetchUserData();
+      next: (user) => {
+        this.currentUserSubject.next(user);
+        console.log('✅ Sesión activa detectada, usuario cargado:', user);
       },
       error: (error) => {
         console.log('ℹ️ No hay sesión activa');
@@ -87,19 +83,38 @@ login(credentials: LoginRequest): Observable<any> {
     });
   }
 
-  // Obtener datos del usuario actual (placeholder por ahora)
+  // ✅ VERSIÓN FINAL: fetchUserData() usando /auth/me
   private fetchUserData() {
-    // TODO: Cuando tengas endpoint para usuario actual, usarlo aquí
-    // Por ahora, simulamos datos del admin que está en data.sql
-    const mockUser: Usuario = {
-      email: 'adminm@admin.com',
-      nombre: 'Agustin',
-      apellido: 'Nieto', 
-      rol: 'ADMINISTRADOR'
-    };
-    
-    this.currentUserSubject.next(mockUser);
-    console.log('👤 Usuario cargado:', mockUser);
+    this.http.get<Usuario>(`${environment.apiUrl}/auth/me`, {
+      withCredentials: true
+    }).subscribe({
+      next: (user) => {
+        this.currentUserSubject.next(user);
+        console.log('👤 Usuario cargado desde API:', user);
+      },
+      error: (error) => {
+        console.error('❌ Error obteniendo usuario:', error);
+        this.currentUserSubject.next(null);
+      }
+    });
+  }
+
+  // ✅ VERSIÓN FINAL: verifySession() usando /auth/me
+  verifySession(): Observable<boolean> {
+    return this.http.get<Usuario>(`${environment.apiUrl}/auth/me`, {
+      withCredentials: true
+    }).pipe(
+      map((user) => {
+        console.log('✅ Sesión verificada por guard, usuario:', user);
+        this.currentUserSubject.next(user);
+        return true;
+      }),
+      catchError((error) => {
+        console.log('❌ No hay sesión activa (verificado por guard)');
+        this.currentUserSubject.next(null);
+        return of(false);
+      })
+    );
   }
 
   // Getters útiles para guards
