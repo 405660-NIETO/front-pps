@@ -7,6 +7,8 @@ import { RepairRequestComponent } from './features/repair-request/repair-request
 import { AdminGuard } from './auth/guards/admin.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { TestAdminComponent } from './admin/test-admin/test-admin.component';
+import { TestEmployeeComponent } from './admin/test-admin/test-employee.component';
+import { EmployeeGuard } from './auth/guards/employee.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -17,6 +19,7 @@ export const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
   { path: 'admin/test', component: TestAdminComponent, canActivate: [AdminGuard] },
+  { path: 'admin/employee-test', component: TestEmployeeComponent, canActivate: [EmployeeGuard] },
 
   { path: '**', redirectTo: '' }
 ];
